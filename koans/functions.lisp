@@ -17,24 +17,24 @@
 
 (define-test call-a-function
   ;; DEFUN can be used to define global functions.
-  (assert-equal ____ (some-named-function 4 5))
+  (assert-equal 9 (some-named-function 4 5))
   ;; FLET can be used to define local functions.
   (flet ((another-named-function (a b) (* a b)))
-    (assert-equal ____ (another-named-function 4 5)))
+    (assert-equal 20 (another-named-function 4 5)))
   ;; LABELS can be used to define local functions which can refer to themselves
   ;; or each other.
   (labels ((recursive-function (a b)
              (if (or (= 0 a) (= 0 b))
                  1
                  (+ (* a b) (recursive-function (1- a) (1- b))))))
-    (assert-equal ____ (recursive-function 4 5))))
+    (assert-equal 330 (recursive-function 4 5))))
 
 (define-test shadow-a-function
   (assert-eq 18 (some-named-function 7 11))
   ;; FLET and LABELS can shadow function definitions.
   (flet ((some-named-function (a b) (* a b)))
-    (assert-equal ____ (some-named-function 7 11)))
-  (assert-equal ____ (some-named-function 7 11)))
+    (assert-equal 77 (some-named-function 7 11)))
+  (assert-equal 18 (some-named-function 7 11)))
 
 (defun function-with-optional-parameters (&optional (a 2) (b 3) c)
   ;; If an optional argument to a function is not provided, it is given its
@@ -42,10 +42,10 @@
   (list a b c))
 
 (define-test optional-parameters
-  (assert-equal ____ (function-with-optional-parameters 42 24 4224))
-  (assert-equal ____ (function-with-optional-parameters 42 24))
-  (assert-equal ____ (function-with-optional-parameters 42))
-  (assert-equal ____ (function-with-optional-parameters)))
+  (assert-equal `(42 24 4224) (function-with-optional-parameters 42 24 4224))
+  (assert-equal `(42 24 nil) (function-with-optional-parameters 42 24))
+  (assert-equal `(42 3 nil) (function-with-optional-parameters 42))
+  (assert-equal `(2 3 nil) (function-with-optional-parameters)))
 
 (defun function-with-optional-indication
     (&optional (a 2 a-provided-p) (b 3 b-provided-p))
